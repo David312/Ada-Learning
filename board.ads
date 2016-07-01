@@ -1,10 +1,14 @@
-with Square;
+with Square; use Square;
+
 
 
 package Board is
    type Board is private;
+   subtype Position is Integer range 1..3;
 
    function Three_On_Line(B:Board)return Boolean;
+
+   function Remaining_Turns(B:Board)return Integer;
 
    procedure Set_Value(B:in out Board;X:in Position;Y:in Position;V:in Value;Result:out Boolean);
 

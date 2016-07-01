@@ -1,10 +1,12 @@
-GNAT = leon3-elf-gnatmake
+GNAT = leon3-elf-gnatmake -a
 OBJS = square.o board.o game.o
-MAIN = Three_On_Line
-OPTS = -a
+MAIN = three_on_line
+#OPTS = -a
 
-all: $(OBJS)
-	$(GNAT) $(OPTS) $(MAIN)
+all: $(MAIN).adb
+	$(GNAT) $(MAIN)
+
+
 
 square.o: square.adb
 	 $(GNAT) square.adb

@@ -1,7 +1,8 @@
-
+*.xml
+*.cgpr
 *.o
 *.ali
 *~
 *.db
 *.gpr
-gnat*
+*.db*
