@@ -1,6 +1,6 @@
 with System.IO;use System.IO;
 with Ada.Integer_Text_IO;
-
+with Square; use Square;
 
 package body Game is
 
@@ -17,12 +17,16 @@ package body Game is
    procedure Get_Coord(G:Game;X:out Board.Position;Y:out Board.Position) is
       --        X,Y:Integer;
    begin
-      Put("Please enter X coordinate");
+      Put("Please enter X coordinate: ");
       Ada.Integer_Text_IO.Get(X);
-      Put("Please enter Y coordinate");
+      Put("Please enter Y coordinate: ");
       Ada.Integer_Text_IO.Get(Y);
       --        X := X;
       --        Y := Y;
+   exception
+      when Constraint_Error => Put_Line("The range of possible values is [1..3]");
+      when others => Put_Line("Unhandled exception!");
+	 
    end Get_Coord;
 
 
@@ -53,24 +57,35 @@ package body Game is
 
 
    procedure Start(G:in out Game) is
-      Res:Boolean;
+      Valid_Input:Boolean;
       Val:Square.Value;
-      X,Y:Board.Position;
+      function Debug_Val(V:in Value) return Character is
+	 C:Character;
+      begin
+	 case V is
+	    when EMPTY => C := ' ';
+	    when X => C := 'X';
+	    when O => C := 'O';
+	    when others => C := 'E'; -- Should not be used
+	 end case;
+	 return C;
+      end Debug_Val;
    begin
       G.Player_Turn := P1;
       G.Status := NOT_FINISHED;
       loop
          exit when G.Status /= NOT_FINISHED;
          Update_Value(G.Player_Turn,Val);
-         Res := False;
+	 Put_Line("Val-> "&Debug_Val(Val));
+         Valid_Input := False; -- the boolean is set to false every iteration for safety
 
          -- Print the game board and turn
          Print(G);
 
          -- Get a correct Position value
-         while Res = False loop
-            Get_Coord(G,X,Y);
-            Board.Set_Value(G.Game_Board,G.Aux_Coord.X,G.Aux_Coord.Y,Val,Res);
+         while not Valid_Input loop
+            Get_Coord(G,G.Aux_Coord.X,G.Aux_Coord.Y);
+            Board.Set_Value(G.Game_Board,G.Aux_Coord.X,G.Aux_Coord.Y,Val,Valid_Input);
          end loop;
 
          -- Check if there is a winner
@@ -89,7 +104,7 @@ package body Game is
          -- If the game is over a message is printed
          if G.Status /= NOT_FINISHED then
             Announce_Winner(G);
-            -- Else the game is moved to the next step
+            -- Otherwise the player's turn is updated
          else
             if G.Player_Turn = P1 then
                G.Player_Turn := P2;

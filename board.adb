@@ -4,16 +4,15 @@ package body Board is
 
    procedure Set_Value(B:in out Board;X:in Position;Y:in Position;V:in Value;Result:out Boolean) is
    begin
-      Result := False;
-      if Is_Marked(B.Squares(X,Y))  then
+      Result := Is_Marked(B.Squares(X,Y));
+      if not Result then
          Set_Value(B.Squares(X,Y),V);
-         Result := True;
       end if;
    end Set_Value;
 
 
    procedure Print(B:in Board) is
-      I,J:Position;
+      I,J:Position := 1;
    begin
       for I in 1..3 loop
          for J in 1..3 loop
@@ -27,7 +26,7 @@ package body Board is
 
 
    procedure Reset(B:in out Board) is
-      I,J:Integer;
+      I,J:Position := 1;
    begin
       for I in 1..3 loop
          for J in 1..3 loop
@@ -40,7 +39,7 @@ package body Board is
    function Three_On_Line(B:Board)return Boolean is
 
       function Row(B:Board)return Boolean is
-         I:Integer;
+         I:Position := 1;
          Res:Boolean := False;
       begin
          for I in 1..3 loop
@@ -52,7 +51,7 @@ package body Board is
       end Row;
 
       function Column(B:Board)return Boolean is
-         I:Integer;
+         I:Position := 1;
          Res:Boolean := False;
       begin
          for I in 1..3 loop
