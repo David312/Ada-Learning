@@ -56,20 +56,7 @@ package body Game is
 
    procedure Start(G:in out Game) is
       Valid_Input:Boolean;
-      Val:Square.Value;
-      -- DEBUG
-      --  function Debug_Val(V:in Value) return Character is
-      --  	 C:Character;
-      --  begin
-      --  	 case V is
-      --  	    when EMPTY => C := ' ';
-      --  	    when X => C := 'X';
-      --  	    when O => C := 'O';
-      --  	    when others => C := 'E'; -- Should not be used
-      --  	 end case;
-      --  	 return C;
-      --  end Debug_Val;
-      
+      Val:Square.Value;      
    begin
       G.Player_Turn := P1;
       G.Status := NOT_FINISHED;
@@ -86,7 +73,7 @@ package body Game is
             Get_Coord(G);
             Board.Set_Value(G.Game_Board,G.Aux_Coord.X,G.Aux_Coord.Y,Val,Valid_Input);
          end loop;
-         Print(G);
+
          -- Check if there is a winner
          if Board.Three_On_Line(G.Game_Board) then
             -- Update Game status
