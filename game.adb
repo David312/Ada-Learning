@@ -9,22 +9,20 @@ package body Game is
    begin
       case T is
          when P1 => C := '1';
-         when P2 => C:= '2';
+         when P2 => C := '2';
       end case;
       Put(C);
    end Print_Turn;
 
-   procedure Get_Coord(G:Game;X:out Board.Position;Y:out Board.Position) is
-      --        X,Y:Integer;
+   procedure Get_Coord(G:in out Game) is
    begin
       Put("Please enter X coordinate: ");
-      Ada.Integer_Text_IO.Get(X);
+      Ada.Integer_Text_IO.Get(G.Aux_Coord.X);
       Put("Please enter Y coordinate: ");
-      Ada.Integer_Text_IO.Get(Y);
-      --        X := X;
-      --        Y := Y;
+      Ada.Integer_Text_IO.Get(G.Aux_Coord.Y);
    exception
       when Constraint_Error => Put_Line("The range of possible values is [1..3]");
+--      when Already_Filled => Put_Line("That Square is already filled!"); New_Line;
       when others => Put_Line("Unhandled exception!");
 	 
    end Get_Coord;
@@ -48,8 +46,8 @@ package body Game is
    procedure Announce_Winner(G:Game) is
    begin
       if G.Status /= DRAW then
-         Put("Congratulations Player "); Print_Turn(G.Player_Turn);
-         Put_Line("! You are the winner!!!");
+         Put("Congratulations Player "); Print_Turn(G.Player_Turn); Put_Line("!");
+         Put_Line("You are the winner!!!");
       else
          Put_Line("Nobody wins this time...");
       end if;
@@ -59,39 +57,40 @@ package body Game is
    procedure Start(G:in out Game) is
       Valid_Input:Boolean;
       Val:Square.Value;
-      function Debug_Val(V:in Value) return Character is
-	 C:Character;
-      begin
-	 case V is
-	    when EMPTY => C := ' ';
-	    when X => C := 'X';
-	    when O => C := 'O';
-	    when others => C := 'E'; -- Should not be used
-	 end case;
-	 return C;
-      end Debug_Val;
+      -- DEBUG
+      --  function Debug_Val(V:in Value) return Character is
+      --  	 C:Character;
+      --  begin
+      --  	 case V is
+      --  	    when EMPTY => C := ' ';
+      --  	    when X => C := 'X';
+      --  	    when O => C := 'O';
+      --  	    when others => C := 'E'; -- Should not be used
+      --  	 end case;
+      --  	 return C;
+      --  end Debug_Val;
+      
    begin
       G.Player_Turn := P1;
       G.Status := NOT_FINISHED;
       loop
          exit when G.Status /= NOT_FINISHED;
          Update_Value(G.Player_Turn,Val);
-	 Put_Line("Val-> "&Debug_Val(Val));
-         Valid_Input := False; -- the boolean is set to false every iteration for safety
+         Valid_Input := False; -- the boolean is set to false in every iteration for safety
 
-         -- Print the game board and turn
+         -- Print the game board and player's turn
          Print(G);
 
          -- Get a correct Position value
          while not Valid_Input loop
-            Get_Coord(G,G.Aux_Coord.X,G.Aux_Coord.Y);
+            Get_Coord(G);
             Board.Set_Value(G.Game_Board,G.Aux_Coord.X,G.Aux_Coord.Y,Val,Valid_Input);
          end loop;
-
+         Print(G);
          -- Check if there is a winner
          if Board.Three_On_Line(G.Game_Board) then
             -- Update Game status
-            if G.Player_Turn = P1 then
+	    if G.Player_Turn = P1 then
                G.Status := P1_WINS;
             else
                G.Status := P2_WINS;

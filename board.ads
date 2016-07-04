@@ -10,7 +10,7 @@ package Board is
 
    function Remaining_Turns(B:Board)return Integer;
 
-   procedure Set_Value(B:in out Board;X:in Position;Y:in Position;V:in Value;Result:out Boolean);
+   procedure Set_Value(B:in out Board;X:in Position;Y:in Position;V:in Value;Able_To_Mark:out Boolean);
 
    procedure Print(B:in Board);
 
